@@ -144,6 +144,32 @@ uv-add-package:
 uv-version:
 	@uv --version | awk '{print $$2}'
 
+TOOLS := "$(TOOLS) pixi"
+.PHONY: pixi-tooling pixi-import pixi-clean-cache pixi-clean-venv pixi-clean-lock pixi-lock pixi-install pixi-add-package pixi-version
+pixi-tooling:
+	curl -fsSL https://pixi.sh/install.sh | bash
+# pixi-import:
+# # 	cd pdm; pdm import -f requirements ../requirements.txt
+# # 	grep -v '^\s*#' requirements.txt | grep -v '^\s*$' | awk '{print "\"" $0 "\""}' | tr '\n' ' '
+# # 	@echo $$(grep -v '^\s*#' requirements.txt | grep -v '^\s*$$' | awk '{print "\"" $$0 "\""}' | tr '\n' ' ')
+# 	cd pixi; pixi add --pypi $$(grep -v '^\s*#' ../requirements.txt | grep -v '^\s*$$' | awk '{print "\"" $$0 "\""}' | tr '\n' ' ')
+pixi-clean-cache: pip-clean
+	rm -rf ~/.cache/rattler ~/.cache/pixi
+pixi-clean-venv:
+	rm -rf pixi/.pixi/envs
+pixi-clean-lock:
+	rm -f pixi/pixi.lock
+# pdm-lock:
+# 	cd pdm; pdm lock
+# pdm-install:
+# 	cd pdm; pdm install
+# pdm-update:
+# 	cd pdm; pdm update
+pixi-add-package:
+	cd pixi; pixi add --pypi $(PACKAGE)
+pixi-version:
+	@pixi --version | awk '{print $$2}'
+
 .PHONY: tools
 tools:
 	@echo $(TOOLS)
